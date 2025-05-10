@@ -32,16 +32,38 @@ class ImagePreprocessor:
             images = torchvision_F.normalize(images, mean=self.mean, std=self.std)
         return images
 
+class ModelWrapper:
+    def __init__(self, feature_extractor:torch.nn.Module, classifier:torch.nn.Module):
+        """
+        Initialises a model wrapper for feature extraction and classification.
+        """
+        self.feature_extractor = feature_extractor
+        self.classifier = classifier
+
+    def forward(self, images:torch.Tensor):
+        """
+        Forward pass through the model.
+
+        Args:
+            images (torch.Tensor): Batch of images to process.
+
+        Returns:
+            torch.Tensor: Model outputs.
+        """
+        features = self.feature_extractor(images)
+        outputs = self.classifier(features)
+        return features, outputs
 
 if __name__ == "__main__":
     print("Testing image classifiers...")
     model_name = "maxvit_tiny_tf_224.in1k"
-    model = timm.create_model(model_name=model_name, pretrained=True, in_chans=3, features_only=True)
+    feature_extractor = timm.create_model(model_name=model_name, pretrained=True, in_chans=3, features_only=True)
     classifier = timm.create_model(model_name=model_name, pretrained=True, in_chans=3, features_only=False).get_classifier()
-    data_config = timm.data.resolve_model_data_config(model)
+    data_config = timm.data.resolve_model_data_config(feature_extractor)
     print("Data config:", data_config)
 
     image_preprocessor = ImagePreprocessor(data_config)
+    model = ModelWrapper(feature_extractor=feature_extractor, classifier=classifier)
 
     test_batch = torch.randn(4, 3, 224, 224)
 
