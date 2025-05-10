@@ -35,8 +35,9 @@ class ImagePreprocessor:
 
 if __name__ == "__main__":
     print("Testing image classifiers...")
-    
-    model = timm.create_model(model_name="maxvit_tiny_tf_224.in1k", pretrained=True, in_chans=3, features_only=True)
+    model_name = "maxvit_tiny_tf_224.in1k"
+    model = timm.create_model(model_name=model_name, pretrained=True, in_chans=3, features_only=True)
+    classifier = timm.create_model(model_name=model_name, pretrained=True, in_chans=3, features_only=False).get_classifier()
     data_config = timm.data.resolve_model_data_config(model)
     print("Data config:", data_config)
 
@@ -46,5 +47,5 @@ if __name__ == "__main__":
 
     preprocessed_images = image_preprocessor(test_batch)
     print("Preprocessed images shape:", preprocessed_images.shape)
-    
+
     print("Model created successfully.")
