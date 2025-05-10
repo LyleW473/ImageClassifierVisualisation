@@ -2,7 +2,7 @@ import timm
 import torch
 from torchvision.transforms import functional as torchvision_F
 from torch.nn import functional as F
-from typing import Dict, Any
+from typing import Dict, Any, Tuple 
 
 class ImagePreprocessor:
     def __init__(self, data_config:Dict[str, Any]):
@@ -33,14 +33,20 @@ class ImagePreprocessor:
         return images
 
 class ModelWrapper:
-    def __init__(self, feature_extractor:torch.nn.Module, classifier:torch.nn.Module):
+    def __init__(
+            self, 
+            feature_extractor:torch.nn.Module,
+            classifier:torch.nn.Module,
+            image_preprocessor:ImagePreprocessor,
+            ):
         """
-        Initialises a model wrapper for feature extraction and classification.
+        Initialises a model wrapper with all its components.
         """
         self.feature_extractor = feature_extractor
         self.classifier = classifier
+        self.image_preprocessor = image_preprocessor
 
-    def forward(self, images:torch.Tensor):
+    def forward(self, images:torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
         """
         Forward pass through the model.
 
@@ -50,6 +56,7 @@ class ModelWrapper:
         Returns:
             torch.Tensor: Model outputs.
         """
+        images = self.image_preprocessor(images)
         features = self.feature_extractor(images)
         outputs = self.classifier(features)
         return features, outputs
