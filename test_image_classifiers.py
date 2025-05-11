@@ -1,10 +1,12 @@
 import torch
 import numpy as np
 import json
+import random
 
 from src.ml.model.utils import load_model
 from datasets import load_dataset
 from PIL.JpegImagePlugin import JpegImageFile
+from typing import Dict
 
 if __name__ == "__main__":
     print("Testing image classifiers...")
@@ -30,38 +32,66 @@ if __name__ == "__main__":
         plt.axis('off')
         plt.show()
 
-    def imagenet1k_sample_generator():
+
+    def get_imagenet1k_sample_generator(buffer_size:int=100):
         """
         Generator function to yield samples from the ImageNet-1K dataset.
         - Returns a tuple of (image, label) for each sample.
+        - The generator function will keep yielding samples indefinitely.
+        - Samples are added to a buffer of size 'buffer_size' before yielding
+        - If the dataset iterator is exhausted, it will reset and continue yielding samples.
+        - Images in a buffer are shuffled before yielding.
+
+        Args:
+            buffer_size (int): The size of the buffer to hold samples before yielding.
         """
         # Load the ImageNet-1K dataset
         imagenet_dataset = load_dataset("imagenet-1k", split="validation", streaming=True, trust_remote_code=True)
 
-        for sample in imagenet_dataset:
-            image = sample["image"]
-            label = sample["label"]
+        dataset_iter = iter(imagenet_dataset)
 
-            # Visualise the image
-            visualise_image(image)
+        while True:
+            buffer = []
 
-            # Image conversion
-            image = image.convert("RGB") # JpegImageFile -> PIL Image
-            image = np.array(image) # PIL Image -> np.ndarray
-            image = torch.tensor(image, dtype=torch.float32) # np.ndarray -> torch.Tensor
-            image = image.permute(2, 0, 1) # (H, W, C) -> (C, H, W)
-            image = image.unsqueeze(0) # Add batch dimension
-            yield (image, label)
+            try:
+                # Fill the buffer with samples
+                for _ in range(buffer_size):
+                    sample = next(dataset_iter)
+                    image = sample["image"]
+                    label = sample["label"]
 
-    with open("in1k_cls_index.json", "r") as f:
-        imagenet1k_cls_index = json.load(f)
+                    # Visualise the image
+                    # visualise_image(image)
 
-    def answer_generator():
+                    # Image conversion
+                    image = image.convert("RGB") # JpegImageFile -> PIL Image
+                    image = np.array(image) # PIL Image -> np.ndarray
+                    image = torch.tensor(image, dtype=torch.float32) # np.ndarray -> torch.Tensor
+                    image = image.permute(2, 0, 1) # (H, W, C) -> (C, H, W)
+                    image = image.unsqueeze(0) # Add batch dimension
+
+                    buffer.append((image, label))
+            
+            except StopIteration:
+                # If the dataset iterator is exhausted, reset it
+                imagenet_dataset = load_dataset("imagenet-1k", split="validation", streaming=True, trust_remote_code=True)
+                dataset_iter = iter(imagenet_dataset)
+                continue
+            
+            random.shuffle(buffer)
+            
+            # Yield samples from the buffer
+            for sample in buffer:
+                yield sample
+
+    def get_answer_generator(class_index:Dict[str, str]):
         """
         Generator function to yield the answer for a sample from the ImageNet-1K dataset.
         - Returns a JSON object containing the feature, logits, confidence, predicted class name, and actual class name.
-        """
 
+        Args:
+            class_index (Dict[str, str]): A dictionary mapping class IDs to class names.
+        """
         while True:
             image, label = next(imagenet1k_gen)
             
@@ -84,8 +114,8 @@ if __name__ == "__main__":
 
             # Extract confidence and class names.
             confidence = probs[0][class_id].numpy().tolist()
-            predicted_class_name = imagenet1k_cls_index[str(class_id)]
-            actual_class_name = imagenet1k_cls_index[str(label)]
+            predicted_class_name = class_index[str(class_id)]
+            actual_class_name = class_index[str(label)]
 
             json_result = {
                 # "feature": features,
@@ -97,11 +127,12 @@ if __name__ == "__main__":
             print("JSON result", json_result)
             yield json_result
 
+    with open("in1k_cls_index.json", "r") as f:
+        imagenet1k_cls_index = json.load(f)
+    imagenet1k_gen = get_imagenet1k_sample_generator(buffer_size=10)
+    answer_gen = get_answer_generator(class_index=imagenet1k_cls_index)
     
-    imagenet1k_gen = imagenet1k_sample_generator()
-    answer_gen = answer_generator()
-    
-    for i in range(5):
+    for i in range(20):
         print("Iteration", i)
         pred_answer_json = next(answer_gen)
     
