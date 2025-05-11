@@ -3,9 +3,10 @@ import numpy as np
 import random
 
 from datasets import load_dataset
-from typing import Dict
+from typing import Dict, Any
 
 from src.ml.model.wrappers import ModelWrapper
+from src.ml.model.results import InferenceResult
 
 def get_imagenet1k_sample_generator(buffer_size:int=100):
     """
@@ -76,31 +77,53 @@ def get_answer_generator(
         # Forward pass
         with torch.no_grad():
             inference_result = model.forward(image)
-        features = inference_result.features
-        logits = inference_result.logits
-        probs = inference_result.probs
-        class_ids = inference_result.class_ids
+        
+        yield get_json_result(
+                            inference_result=inference_result, 
+                            class_index=class_index, 
+                            label=label
+                            )
 
-        assert logits.shape == (1, 1000), f"Logits shape mismatch: {logits.shape}"
-        assert probs.shape == (1, 1000), f"Probs shape mismatch: {probs.shape}"
-        assert class_ids.shape == (1,), f"Class IDs shape mismatch: {class_ids.shape}"
+def get_json_result(
+                    inference_result:InferenceResult,
+                    class_index:Dict[str, str], 
+                    label:int
+                    ) -> Dict[str, Any]:
+    """
+    Converts the inference result into a JSON object that 
+    encapsulates the information about the model's prediction
+    that can be easily interpreted.
+    
+    Args:
+        inference_result (InferenceResult): The result of the model inference.
+        class_index (Dict[str, str]): A dictionary mapping class IDs to class names.
+        label (int): The actual label of the image.
+    """
+    features = inference_result.features
+    logits = inference_result.logits
+    probs = inference_result.probs
+    class_ids = inference_result.class_ids
 
-        # Remove batch dimension for all tensors
-        features = [feature.squeeze(0).numpy().tolist() for feature in features] 
-        logits = logits.squeeze(0).numpy().tolist()
-        class_id = class_ids.squeeze(0).numpy().tolist()
+    assert logits.shape == (1, 1000), f"Logits shape mismatch: {logits.shape}"
+    assert probs.shape == (1, 1000), f"Probs shape mismatch: {probs.shape}"
+    assert class_ids.shape == (1,), f"Class IDs shape mismatch: {class_ids.shape}"
 
-        # Extract confidence and class names.
-        confidence = probs[0][class_id].numpy().tolist()
-        predicted_class_name = class_index[str(class_id)]
-        actual_class_name = class_index[str(label)]
+    # Remove batch dimension for all tensors
+    features = [feature.squeeze(0).numpy().tolist() for feature in features] 
+    logits = logits.squeeze(0).numpy().tolist()
+    class_id = class_ids.squeeze(0).numpy().tolist()
 
-        json_result = {
-            # "feature": features,
-            # "logits": logits,
-            "confidence": confidence,
-            "predicted_class_name": predicted_class_name,
-            "actual_class_name": actual_class_name,
-        }
-        print("JSON result", json_result)
-        yield json_result
+    # Extract confidence and class names.
+    confidence = probs[0][class_id].numpy().tolist()
+    predicted_class_name = class_index[str(class_id)]
+    actual_class_name = class_index[str(label)]
+
+    json_result = {
+        # "feature": features,
+        # "logits": logits,
+        "confidence": confidence,
+        "predicted_class_name": predicted_class_name,
+        "actual_class_name": actual_class_name,
+    }
+    print("JSON result", json_result)
+    return json_result
