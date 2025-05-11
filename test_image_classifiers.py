@@ -2,6 +2,7 @@ import timm
 import torch
 from src.ml.model.utils import load_model
 from datasets import load_dataset
+import PIL
 
 if __name__ == "__main__":
     print("Testing image classifiers...")
@@ -20,12 +21,12 @@ if __name__ == "__main__":
     print("Class IDs", class_ids.shape)
     print("Model created successfully.")
 
-    def visualise_image(image):
+    def visualise_image(image:PIL.JpegImagePlugin.JpegImageFile) -> None:
         """
         Visualises an image using matplotlib.
         
         Args:
-            image (torch.Tensor): Image tensor to visualise.
+            image (PIL.JpegImagePlugin.JpegImageFile): The image to be visualised.
         """
         import matplotlib.pyplot as plt
         import numpy as np
