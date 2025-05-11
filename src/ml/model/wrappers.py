@@ -1,8 +1,25 @@
 import torch
 from torch.nn import functional as F
-from typing import Tuple 
+from dataclasses import dataclass
 
 from src.ml.model.image_preprocessor import ImagePreprocessor
+
+
+@dataclass
+class InferenceResult:
+    """
+    Class to hold the inference results.
+
+    Attributes:
+        features (torch.Tensor): Feature maps from the model.
+        logits (torch.Tensor): Raw model outputs.
+        probs (torch.Tensor): Probabilities from the model outputs.
+        class_ids (torch.Tensor): Predicted class IDs.
+    """
+    features: torch.Tensor
+    logits: torch.Tensor
+    probs: torch.Tensor
+    class_ids: torch.Tensor
 
 class ModelWrapper:
     def __init__(
@@ -18,7 +35,7 @@ class ModelWrapper:
         self.classifier = classifier
         self.image_preprocessor = image_preprocessor
 
-    def forward(self, images:torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
+    def forward(self, images:torch.Tensor) -> InferenceResult:
         """
         Forward pass through the model.
 
@@ -31,8 +48,15 @@ class ModelWrapper:
         images = self.image_preprocessor(images)
         features = self.feature_extractor(images)
         print("Features", [feature.shape for feature in features])
-        outputs = self.classifier(features[-1]) # Last feature map
-        return features, outputs
+        logits, probs, class_ids = self.classifier(features[-1]) # Last feature map
+
+        result = InferenceResult(
+            features=features,
+            logits=logits,
+            probs=probs,
+            class_ids=class_ids
+        )
+        return result
 
 class ClassifierWrapper:
     def __init__(
@@ -74,5 +98,5 @@ class ClassifierWrapper:
 
         class_ids = torch.argmax(probs, dim=1)
         print("Class IDs", class_ids)
-        return logits
-        
+
+        return logits, probs, class_ids
