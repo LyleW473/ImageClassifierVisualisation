@@ -3,6 +3,7 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from src.ml.model.utils import load_model
 from src.ml.inference.generators import get_imagenet1k_sample_generator, get_answer_generator
+from fastapi import status
 
 app = FastAPI()
 
@@ -31,11 +32,17 @@ async def get_prediction(request:Request) -> JSONResponse:
     Args:
         request (Request): The incoming request object.
     """
-    pred_answer_json = next(answer_gen)
-    print("Prediction JSON:", pred_answer_json)
+    try:
+        answer_json = next(answer_gen)
+        status_code = status.HTTP_200_OK
+    except Exception as e:
+        print("Error in prediction:", e)
+        answer_json = {"error": str(e)}
+        status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+    
     json_response = JSONResponse(
-                            content=pred_answer_json,
-                            status_code=200
+                            content=answer_json,
+                            status_code=status_code
                             )
     return json_response
 
