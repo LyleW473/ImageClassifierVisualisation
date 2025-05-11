@@ -1,5 +1,6 @@
 import json
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
 from src.ml.model.utils import load_model
 from src.ml.inference.generators import get_imagenet1k_sample_generator, get_answer_generator
 
@@ -22,6 +23,21 @@ answer_gen = get_answer_generator(
 async def root():
     return {"message": "Hello World"}
 
+@app.get('/predict')
+async def get_prediction(request:Request) -> JSONResponse:
+    """
+    Get the next prediction from the answer generator.
+
+    Args:
+        request (Request): The incoming request object.
+    """
+    pred_answer_json = next(answer_gen)
+    print("Prediction JSON:", pred_answer_json)
+    json_response = JSONResponse(
+                            content=pred_answer_json,
+                            status_code=200
+                            )
+    return json_response
 
 if __name__ == "__main__":
     import uvicorn
