@@ -1,5 +1,6 @@
 import torch
 import numpy as np
+import json
 
 from src.ml.model.utils import load_model
 from datasets import load_dataset
@@ -70,12 +71,16 @@ if __name__ == "__main__":
             print("Label:", label)
             yield (image, label)
 
-    # Dataset loading
-    imagenet1k_gen = imagenet1k_sample_generator()
+    with open("in1k_cls_index.json", "r") as f:
+        imagenet1k_cls_index = json.load(f)
 
-    for i in range(5):
+    def answer_generator():
+        """
+        Generator function to yield the answer for a sample from the ImageNet-1K dataset.
+        - Returns a JSON object containing the feature, logits, confidence, predicted class name, and actual class name.
+        """
         image, label = next(imagenet1k_gen)
-
+        
         # Forward pass
         with torch.no_grad():
             inference_result = model.forward(image)
@@ -83,8 +88,33 @@ if __name__ == "__main__":
         logits = inference_result.logits
         probs = inference_result.probs
         class_ids = inference_result.class_ids
-        print("Features", [feature.shape for feature in features])
-        print("Logits", logits.shape)
-        print("Probs", probs.shape)
-        print("Class IDs", class_ids.shape)
-        break
+
+        assert logits.shape == (1, 1000), f"Logits shape mismatch: {logits.shape}"
+        assert probs.shape == (1, 1000), f"Probs shape mismatch: {probs.shape}"
+        assert class_ids.shape == (1,), f"Class IDs shape mismatch: {class_ids.shape}"
+
+        # Remove batch dimension for all tensors
+        features = [feature.squeeze(0).numpy().tolist() for feature in features] 
+        logits = logits.squeeze(0).numpy().tolist()
+        class_id = class_ids.squeeze(0).numpy().tolist()
+
+        # Extract confidence and class names.
+        confidence = probs[0][class_id].numpy().tolist()
+        predicted_class_name = imagenet1k_cls_index[str(class_id)]
+        actual_class_name = imagenet1k_cls_index[str(label)]
+
+        json_result = {
+            "feature": features,
+            "logits": logits,
+            "confidence": confidence,
+            "predicted_class_name": predicted_class_name,
+            "actual_class_name": actual_class_name,
+        }
+        print("JSON result", json_result)
+        yield json_result
+
+    
+    imagenet1k_gen = imagenet1k_sample_generator()
+    answer_gen = answer_generator()
+    pred_answer = next(answer_gen)
+    
