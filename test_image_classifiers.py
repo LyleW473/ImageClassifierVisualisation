@@ -1,6 +1,7 @@
 import timm
 import torch
 from src.ml.model.utils import load_model
+from datasets import load_dataset
 
 if __name__ == "__main__":
     print("Testing image classifiers...")
@@ -18,3 +19,14 @@ if __name__ == "__main__":
     print("Probs", probs.shape)
     print("Class IDs", class_ids.shape)
     print("Model created successfully.")
+
+
+    # Dataset loading
+    imagenet_dataset = load_dataset("imagenet-1k", split="validation", streaming=True, trust_remote_code=True)
+
+    for sample in imagenet_dataset:
+        print("Sample:", sample.keys())
+        image = sample["image"]
+        label = sample["label"]
+        print("Image shape:", image.size)
+        print("Label:", label)
