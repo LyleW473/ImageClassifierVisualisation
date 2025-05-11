@@ -64,6 +64,13 @@ class ModelWrapper:
         )
         return result
 
+    def eval(self) -> None:
+        """
+        Sets the model to evaluation mode.
+        """
+        self.feature_extractor.eval()
+        self.classifier.eval()
+        
 class ClassifierWrapper:
     def __init__(
                 self, 
@@ -110,3 +117,10 @@ class ClassifierWrapper:
         print("Class IDs", class_ids)
 
         return logits, probs, class_ids
+
+    def eval(self) -> None:
+        """
+        Sets the classifier to evaluation mode.
+        """
+        self.global_pool.eval()
+        self.classifier_head.eval()

@@ -9,6 +9,7 @@ if __name__ == "__main__":
     print("Testing image classifiers...")
     model_name = "maxvit_tiny_tf_224.in1k"
     model = load_model(model_name=model_name)
+    model.eval()
     test_batch = torch.randn(4, 3, 224, 224)
 
     inference_result = model.forward(test_batch)
@@ -53,6 +54,7 @@ if __name__ == "__main__":
         print(type(image), type(label))
         visualise_image(image)
 
+        # Image conversion
         image = image.convert("RGB") # JpegImageFile -> PIL Image
         print(type(image))
         image = np.array(image) # PIL Image -> np.ndarray
@@ -62,3 +64,16 @@ if __name__ == "__main__":
 
         print("Image shape:", image.shape)
         print("Label:", label)
+
+        # Forward pass
+        with torch.no_grad():
+            inference_result = model.forward(image)
+        features = inference_result.features
+        logits = inference_result.logits
+        probs = inference_result.probs
+        class_ids = inference_result.class_ids
+        print("Features", [feature.shape for feature in features])
+        print("Logits", logits.shape)
+        print("Probs", probs.shape)
+        print("Class IDs", class_ids.shape)
+        break
