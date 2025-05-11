@@ -20,6 +20,25 @@ if __name__ == "__main__":
     print("Class IDs", class_ids.shape)
     print("Model created successfully.")
 
+    def visualise_image(image):
+        """
+        Visualises an image using matplotlib.
+        
+        Args:
+            image (torch.Tensor): Image tensor to visualise.
+        """
+        import matplotlib.pyplot as plt
+        import numpy as np
+
+        # Convert the image tensor to a numpy array
+
+        image_np = np.array(image)
+
+        # Display the image
+        plt.imshow(image_np)
+        plt.axis('off')
+        plt.show()
+
 
     # Dataset loading
     imagenet_dataset = load_dataset("imagenet-1k", split="validation", streaming=True, trust_remote_code=True)
@@ -28,5 +47,10 @@ if __name__ == "__main__":
         print("Sample:", sample.keys())
         image = sample["image"]
         label = sample["label"]
+
+        # Visualise the image
+        print(type(image), type(label))
+        visualise_image(image)
+
         print("Image shape:", image.size)
         print("Label:", label)
