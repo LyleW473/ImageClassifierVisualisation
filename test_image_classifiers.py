@@ -1,8 +1,9 @@
-import timm
 import torch
+import numpy as np
+
 from src.ml.model.utils import load_model
 from datasets import load_dataset
-import PIL
+from PIL.JpegImagePlugin import JpegImageFile
 
 if __name__ == "__main__":
     print("Testing image classifiers...")
@@ -21,15 +22,14 @@ if __name__ == "__main__":
     print("Class IDs", class_ids.shape)
     print("Model created successfully.")
 
-    def visualise_image(image:PIL.JpegImagePlugin.JpegImageFile) -> None:
+    def visualise_image(image:JpegImageFile) -> None:
         """
         Visualises an image using matplotlib.
         
         Args:
-            image (PIL.JpegImagePlugin.JpegImageFile): The image to be visualised.
+            image (JpegImageFile): The image to be visualised.
         """
         import matplotlib.pyplot as plt
-        import numpy as np
 
         # Convert the image tensor to a numpy array
 
@@ -53,5 +53,12 @@ if __name__ == "__main__":
         print(type(image), type(label))
         visualise_image(image)
 
-        print("Image shape:", image.size)
+        image = image.convert("RGB") # JpegImageFile -> PIL Image
+        print(type(image))
+        image = np.array(image) # PIL Image -> np.ndarray
+        image = torch.tensor(image, dtype=torch.float32) # np.ndarray -> torch.Tensor
+        image = image.permute(2, 0, 1) # (H, W, C) -> (C, H, W)
+        image = image.unsqueeze(0) # Add batch dimension
+
+        print("Image shape:", image.shape)
         print("Label:", label)
