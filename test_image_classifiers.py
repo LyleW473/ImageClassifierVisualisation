@@ -92,9 +92,17 @@ class ClassifierWrapper:
         print("Pooled features", pooled_features.shape)
         pooled_features = pooled_features.view(pooled_features.size(0), -1)
         print("Pooled features reshaped", pooled_features.shape)
-        outputs = self.classifier_head(pooled_features)
-        print("Outputs", outputs.shape)
-        return outputs
+        logits = self.classifier_head(pooled_features)
+        print("Logits", logits.shape)
+
+        probs = F.softmax(logits, dim=1)
+        
+        print("Outputs", logits[0].min(), logits[0].max())
+        print("Probs", probs[0].min(), probs[0].max())
+
+        class_ids = torch.argmax(probs, dim=1)
+        print("Class IDs", class_ids)
+        return logits
         
 def load_model(model_name:str) -> ModelWrapper:
     """
