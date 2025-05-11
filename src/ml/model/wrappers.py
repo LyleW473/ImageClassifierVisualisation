@@ -1,5 +1,6 @@
 import torch
 from torch.nn import functional as F
+from typing import Tuple
 from dataclasses import dataclass
 
 from src.ml.model.image_preprocessor import ImagePreprocessor
@@ -30,6 +31,11 @@ class ModelWrapper:
             ):
         """
         Initialises a model wrapper with all its components.
+
+        Args:
+            feature_extractor (torch.nn.Module): Feature extractor model.
+            classifier (torch.nn.Module): Classifier model.
+            image_preprocessor (ImagePreprocessor): Image preprocessor for input images.
         """
         self.feature_extractor = feature_extractor
         self.classifier = classifier
@@ -77,7 +83,11 @@ class ClassifierWrapper:
             raise NotImplementedError(f"Global pool {global_pool} not implemented.")
         self.classifier_head = classifier_head
 
-    def __call__(self, features:torch.Tensor) -> torch.Tensor:
+    def __call__(self, features:torch.Tensor) -> Tuple[
+                                                    torch.Tensor, 
+                                                    torch.Tensor, 
+                                                    torch.Tensor
+                                                    ]:
         """
         Forward pass features to get the classifier outputs.
 

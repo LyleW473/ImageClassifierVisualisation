@@ -6,7 +6,14 @@ from typing import Dict, Any
 
 class ImagePreprocessor:
     def __init__(self, data_config:Dict[str, Any]):
+        """
+        Initializes the ImagePreprocessor with the given data configuration.
         
+        Args:   
+        data_config (Dict[str, Any]): Configuration dictionary containing information 
+                                      about the input size, interpolation method, 
+                                      mean, and std.
+        """
         self.resize_size = data_config["input_size"][1:] 
         self.crop_size = data_config["input_size"][1:]
         print(self.resize_size, self.crop_size)
@@ -14,7 +21,7 @@ class ImagePreprocessor:
         self.mean = data_config["mean"]
         self.std = data_config["std"]
 
-    def __call__(self, images:torch.Tensor, normalize=True):
+    def __call__(self, images:torch.Tensor, normalize=True) -> torch.Tensor:
         """
         Preprocess a batch of images.
 
