@@ -42,28 +42,39 @@ if __name__ == "__main__":
         plt.show()
 
 
+    def imagenet1k_sample_generator():
+        """
+        Generator function to yield samples from the ImageNet-1K dataset.
+        - Returns a tuple of (image, label) for each sample.
+        """
+        # Load the ImageNet-1K dataset
+        imagenet_dataset = load_dataset("imagenet-1k", split="validation", streaming=True, trust_remote_code=True)
+
+        for sample in imagenet_dataset:
+            print("Sample:", sample.keys())
+            image = sample["image"]
+            label = sample["label"]
+
+            # Visualise the image
+            print(type(image), type(label))
+            visualise_image(image)
+
+            # Image conversion
+            image = image.convert("RGB") # JpegImageFile -> PIL Image
+            print(type(image))
+            image = np.array(image) # PIL Image -> np.ndarray
+            image = torch.tensor(image, dtype=torch.float32) # np.ndarray -> torch.Tensor
+            image = image.permute(2, 0, 1) # (H, W, C) -> (C, H, W)
+            image = image.unsqueeze(0) # Add batch dimension
+            print("Image shape:", image.shape)
+            print("Label:", label)
+            yield (image, label)
+
     # Dataset loading
-    imagenet_dataset = load_dataset("imagenet-1k", split="validation", streaming=True, trust_remote_code=True)
+    imagenet1k_gen = imagenet1k_sample_generator()
 
-    for sample in imagenet_dataset:
-        print("Sample:", sample.keys())
-        image = sample["image"]
-        label = sample["label"]
-
-        # Visualise the image
-        print(type(image), type(label))
-        visualise_image(image)
-
-        # Image conversion
-        image = image.convert("RGB") # JpegImageFile -> PIL Image
-        print(type(image))
-        image = np.array(image) # PIL Image -> np.ndarray
-        image = torch.tensor(image, dtype=torch.float32) # np.ndarray -> torch.Tensor
-        image = image.permute(2, 0, 1) # (H, W, C) -> (C, H, W)
-        image = image.unsqueeze(0) # Add batch dimension
-
-        print("Image shape:", image.shape)
-        print("Label:", label)
+    for i in range(5):
+        image, label = next(imagenet1k_gen)
 
         # Forward pass
         with torch.no_grad():
