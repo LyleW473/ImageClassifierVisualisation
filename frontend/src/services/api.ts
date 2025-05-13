@@ -1,12 +1,17 @@
-export type APIResponse = {
+import axios from 'axios';
+
+export interface PredictionResponse {
     status: string;
     message?: string;
+    confidence: number;
+    predicted_class_name: string;
+    actual_class_name: string
 }
 
-export async function callBackendAPI(): Promise<APIResponse> {
-    const response = await fetch("http://localhost:8000/predict")
-    if (!response.ok) {
-        throw new Error(`Error: ${response.statusText}`);
+export const callBackendAPI = async () => {
+    const response = await axios.get<PredictionResponse>("http://localhost:8000/predict")
+    if (response.status !== 200) {
+        throw new Error(`Error: ${response.status}`);
     }
-    return await response.json();
+    return response.data;
 }
