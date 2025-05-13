@@ -1,5 +1,6 @@
 import Heading from './components/Heading'
 import Section from './components/Section'
+import StartButton from './components/StartButton'
 
 function App() {
   return (
@@ -8,6 +9,7 @@ function App() {
       <Section title={"Example Section"}>
           This is an example section
       </Section>
+      <StartButton />
     </>
   )
 }
