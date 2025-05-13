@@ -3,6 +3,7 @@ import logging.config
 import logging
 
 from fastapi import FastAPI, Request, status
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from src.ml.model.utils import load_model
 from src.ml.inference.generators import get_imagenet1k_sample_generator, get_answer_generator
@@ -10,6 +11,14 @@ from src.ml.inference.generators import get_imagenet1k_sample_generator, get_ans
 from src.ml.backend.logging_config import LOGGING_CONFIG
 
 app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 logging.config.dictConfig(LOGGING_CONFIG)
 log = logging.getLogger(__name__)
 log.info("ML app started successfully.")
@@ -29,6 +38,16 @@ answer_gen = get_answer_generator(
 @app.get('/')
 async def root():
     return {"message": "Hello World"}
+
+@app.get('/health')
+async def health() -> JSONResponse:
+    """
+    Health check endpoint.
+    """
+    return JSONResponse(
+        content={"status": "healthy"},
+        status_code=status.HTTP_200_OK
+    )
 
 @app.get('/predict')
 async def get_prediction(request:Request) -> JSONResponse:

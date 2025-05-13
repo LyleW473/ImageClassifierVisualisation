@@ -1,18 +1,24 @@
-import {useState} from 'react';
+import { useState } from 'react';
+import { callBackendAPI} from '../services/api';
+import type { APIResponse } from '../services/api';
 
 const StartButton = () => {
-    // TODO: This is currently just a counter, but should do something else later on.
 
-    const [count, setCount] = useState<number>(0);
-    const increment = () => setCount(count + 1);
+    const [info, setInfo] = useState<APIResponse | null>(null);
+
+    const handleClick = () => {
+        callBackendAPI()
+            .then(setInfo)
+            .catch(console.error);
+    };
 
     return (
     <>
-        <h1> The current count is {count} </h1>
-        <button onClick={increment}>
-            Increment
+        <h2> Information: {info ? JSON.stringify(info) : "No info yet"} </h2>
+        <button onClick={handleClick}>
+            Start
         </button>
-        <p>Click the button to increment the count.</p>
+        <p>Click the button to fetch information.</p>
     </>
     )   
 }
