@@ -15,7 +15,7 @@ const Neuron = ({cx, cy, radius, active, activeColour="green", inactiveColour="r
             r={radius}
             fill={active ? activeColour : inactiveColour}
             stroke="black"
-            strokeWidth="1"
+            strokeWidth="3.5"
         />
     );
 }

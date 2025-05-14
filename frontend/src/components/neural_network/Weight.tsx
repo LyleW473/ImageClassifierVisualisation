@@ -8,7 +8,7 @@ type WeightProperties = {
     inactiveColour?: string;
 }
 
-const Weight = ({x1, y1, x2, y2, isActive=false, activeColour="blue", inactiveColour="black"}:WeightProperties) => {
+const Weight = ({x1, y1, x2, y2, isActive=false, activeColour="green", inactiveColour="white"}:WeightProperties) => {
     return (
         <line
             x1={x1}

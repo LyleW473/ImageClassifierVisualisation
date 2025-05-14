@@ -52,7 +52,7 @@ const NeuronLayer = (
             />
         )
     }
-    
+
     // Return array of neurons (essentially <circle> elements)
     return (
         <>
@@ -61,9 +61,10 @@ const NeuronLayer = (
                 y={rectY}
                 width={layerWidth}
                 height={layerHeight}
-                fill="#504343"
+                fill="#3e3e3e"
                 stroke="black"
-                strokeWidth={3}
+                strokeWidth={5}
+                rx={25}
             />
             {neurons}
         </>

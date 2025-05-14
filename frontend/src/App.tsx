@@ -35,7 +35,7 @@ function App() {
           y={0}
           width={canvasWidth}
           height={canvasHeight}
-          fill="lightgrey"
+          fill="grey"
         />
 
         // Neural network
