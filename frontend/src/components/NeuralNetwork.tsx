@@ -4,9 +4,8 @@ import NeuronLayer from "./NeuronLayer";
 type NeuralNetworkProperties = {
     canvasWidth: number;
     canvasHeight: number;
-    numLayers: number;
     neuronsPerLayer: number[];
-    layerXGap: number;
+    gapBetweenLayersX: number;
     neuronRadius: number;
     neuronPaddingX?: number;
     neuronPaddingY?: number;
@@ -18,9 +17,8 @@ type NeuralNetworkProperties = {
 const NeuralNetwork = ({
     canvasWidth,
     canvasHeight,
-    numLayers,
     neuronsPerLayer,
-    layerXGap,
+    gapBetweenLayersX,
     neuronRadius,
     neuronPaddingX=0,
     neuronPaddingY=0,
@@ -30,9 +28,9 @@ const NeuralNetwork = ({
     }: NeuralNetworkProperties) => {
     
     const layers = [];
-
+    const numLayers = neuronsPerLayer.length;
     const layerWidth = 2 * neuronRadius + 2 * neuronPaddingX;
-    const totalNetworkWidth = numLayers * layerWidth + (numLayers - 1) * layerXGap;
+    const totalNetworkWidth = numLayers * layerWidth + (numLayers - 1) * gapBetweenLayersX;
     const networkStart = (canvasWidth - totalNetworkWidth) / 2;
 
     for (let i = 0; i < numLayers; i++) {
@@ -43,7 +41,7 @@ const NeuralNetwork = ({
         const layerYStart = (canvasHeight / 2) - (layerHeight / 2); 
         
         // Calculate the x position of the layer (ensuring that the layers are spaced out evenly throughout the canvas)
-        const layerXStart = networkStart + (i * (layerWidth + layerXGap));
+        const layerXStart = networkStart + (i * (layerWidth + gapBetweenLayersX));
 
         const neuralLayer = <NeuronLayer
             key={i}
