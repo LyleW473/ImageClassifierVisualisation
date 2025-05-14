@@ -64,8 +64,8 @@ const NeuralNetwork = ({
     for (let i = 0; i < numLayers - 1; i++) {
         const numNeuronsInLayer1 = neuronsPerLayer[i];
         const numNeuronsInLayer2 = neuronsPerLayer[i + 1];
-        const layer1X = networkStart + (i * (layerWidth + gapBetweenLayersX)) + layerWidth / 2;
-        const layer2X = networkStart + ((i + 1) * (layerWidth + gapBetweenLayersX)) + layerWidth / 2;
+        const layer1X = networkStart + i * (layerWidth + gapBetweenLayersX) + neuronPaddingX + neuronRadius;
+        const layer2X = networkStart + (i + 1) * (layerWidth + gapBetweenLayersX) + neuronPaddingX + neuronRadius;
 
         const layer1Height = numNeuronsInLayer1 * (2 * neuronRadius) + (numNeuronsInLayer1 - 1) * neuronSpacingY + 2 * neuronPaddingY;
         const layer2Height = numNeuronsInLayer2 * (2 * neuronRadius) + (numNeuronsInLayer2 - 1) * neuronSpacingY + 2 * neuronPaddingY;
@@ -73,9 +73,9 @@ const NeuralNetwork = ({
         const layer2YStart = (canvasHeight / 2) - (layer2Height / 2);
 
         for (let j = 0; j < numNeuronsInLayer1; j++) {
-            const layer1Y = layer1YStart + (j * ((neuronRadius * 2) + neuronSpacingY)) + neuronRadius;
+            const layer1Y = layer1YStart + neuronPaddingY + j * ((neuronRadius * 2) + neuronSpacingY) + neuronRadius;
             for (let k = 0; k < numNeuronsInLayer2; k++) {
-                const layer2Y = layer2YStart + (k * ((neuronRadius * 2) + neuronSpacingY)) + neuronRadius;
+                const layer2Y = layer2YStart + neuronPaddingY + k * ((neuronRadius * 2) + neuronSpacingY) + neuronRadius;
                 weights.push(
                     <Weight
                         key={`${i}-${j}-${k}`}
