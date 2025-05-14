@@ -2,10 +2,11 @@ import Heading from './components/Heading'
 import Section from './components/Section'
 import StartButton from './components/StartButton'
 import NeuralNetwork from './components/NeuralNetwork'
+import { calculateCanvasHeight, calculateCanvasWidth } from './canvas/utils'
 
 function App() {
   const neuronsPerLayer = [1, 3, 5, 5, 3, 1];
-  const gapBetweenLayersX = 200;
+  const gapBetweenLayersX = 0;
   const neuronRadius = 50;
   const neuronSpacingY = 25;
   const neuronActiveColour = "green";
@@ -15,15 +16,8 @@ function App() {
   const canvasPaddingY = 0;
   const canvasPaddingX = 0;
 
-  const maxNeurons = Math.max(...neuronsPerLayer);
-  const totalNeuronHeight = maxNeurons * (2 * neuronRadius);
-  const totalSpacing = (maxNeurons - 1) * neuronSpacingY;
-  const layerHeight = totalNeuronHeight + totalSpacing;
-  const canvasHeight = layerHeight + (2 * canvasPaddingY);
-  
-  // Calculate canvas width based on the number of layers and the gap between them
-  const totalNetworkWidth = neuronsPerLayer.length * (2 * neuronRadius) + (neuronsPerLayer.length - 1) * gapBetweenLayersX;
-  const canvasWidth = totalNetworkWidth + (2 * canvasPaddingX);
+  const canvasHeight = calculateCanvasHeight(neuronsPerLayer, neuronRadius, neuronSpacingY, canvasPaddingY);
+  const canvasWidth = calculateCanvasWidth(neuronsPerLayer, neuronRadius, gapBetweenLayersX, canvasPaddingX);
 
   return (
     <>
