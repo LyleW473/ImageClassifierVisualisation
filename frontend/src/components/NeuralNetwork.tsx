@@ -3,7 +3,7 @@ import NeuronLayer from "./NeuronLayer";
 
 type NeuralNetworkProperties = {
     topLeftNeuronX: number;
-    topLeftNeuronY: number;
+    canvasHeight: number;
     numLayers: number;
     neuronsPerLayer: number[];
     neuronXGap: number;
@@ -17,7 +17,7 @@ type NeuralNetworkProperties = {
 
 const NeuralNetwork = ({
     topLeftNeuronX,
-    topLeftNeuronY,
+    canvasHeight,
     numLayers,
     neuronsPerLayer,
     neuronXGap,
@@ -31,11 +31,16 @@ const NeuralNetwork = ({
     
     const layers = [];
     for (let i = 0; i < numLayers; i++) {
+        const numNeurons = neuronsPerLayer[i];
+        const layerHeight = numNeurons * (2 * neuronRadius) + (numNeurons - 1) * neuronSpacingY + 2 * neuronPaddingY;
+        const layerYStart = (canvasHeight / 2) - (layerHeight / 2); // Center the layer vertically
+        
         const layerXStart = topLeftNeuronX + (i * (neuronRadius * 2 + neuronXGap));
+
         const neuralLayer = <NeuronLayer
             key={i}
             rectX={layerXStart}
-            rectY={topLeftNeuronY}
+            rectY={layerYStart}
             paddingX={neuronPaddingX}
             paddingY={neuronPaddingY}
             numNeurons={neuronsPerLayer[i]}

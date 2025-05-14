@@ -4,16 +4,18 @@ import StartButton from './components/StartButton'
 import NeuralNetwork from './components/NeuralNetwork'
 
 function App() {
+  const canvasWidth = 2000;
+  const canvasHeight = 1000;
   return (
     <>
       <Heading title={"Hello World"} />
       <Section title={"Example Section"}>
           This is an example section
       </Section>
-      <svg width="2000" height="1000">
+      <svg width={canvasWidth} height={canvasHeight}>
         <NeuralNetwork
           topLeftNeuronX={100}
-          topLeftNeuronY={100}
+          canvasHeight={canvasHeight}
           numLayers={5}
           neuronsPerLayer={[1, 3, 3, 3, 1]}
           neuronXGap={200}
