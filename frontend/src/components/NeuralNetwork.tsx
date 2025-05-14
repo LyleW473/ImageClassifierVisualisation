@@ -2,11 +2,11 @@ import NeuronLayer from "./NeuronLayer";
 
 
 type NeuralNetworkProperties = {
-    topLeftNeuronX: number;
+    canvasWidth: number;
     canvasHeight: number;
     numLayers: number;
     neuronsPerLayer: number[];
-    neuronXGap: number;
+    layerXGap: number;
     neuronRadius: number;
     neuronPaddingX?: number;
     neuronPaddingY?: number;
@@ -16,11 +16,11 @@ type NeuralNetworkProperties = {
 }
 
 const NeuralNetwork = ({
-    topLeftNeuronX,
+    canvasWidth,
     canvasHeight,
     numLayers,
     neuronsPerLayer,
-    neuronXGap,
+    layerXGap,
     neuronRadius,
     neuronPaddingX=0,
     neuronPaddingY=0,
@@ -30,12 +30,20 @@ const NeuralNetwork = ({
     }: NeuralNetworkProperties) => {
     
     const layers = [];
+
+    const layerWidth = 2 * neuronRadius + 2 * neuronPaddingX;
+    const totalNetworkWidth = numLayers * layerWidth + (numLayers - 1) * layerXGap;
+    const networkStart = (canvasWidth - totalNetworkWidth) / 2;
+
     for (let i = 0; i < numLayers; i++) {
         const numNeurons = neuronsPerLayer[i];
+
+        // Center the layer vertically
         const layerHeight = numNeurons * (2 * neuronRadius) + (numNeurons - 1) * neuronSpacingY + 2 * neuronPaddingY;
-        const layerYStart = (canvasHeight / 2) - (layerHeight / 2); // Center the layer vertically
+        const layerYStart = (canvasHeight / 2) - (layerHeight / 2); 
         
-        const layerXStart = topLeftNeuronX + (i * (neuronRadius * 2 + neuronXGap));
+        // Calculate the x position of the layer (ensuring that the layers are spaced out evenly throughout the canvas)
+        const layerXStart = networkStart + (i * (layerWidth + layerXGap));
 
         const neuralLayer = <NeuronLayer
             key={i}
