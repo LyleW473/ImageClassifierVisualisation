@@ -3,6 +3,7 @@ import Section from './components/Section'
 import StartButton from './components/StartButton'
 import NeuralNetwork from './components/neural_network/NeuralNetwork'
 import { calculateCanvasHeight, calculateCanvasWidth } from './canvas/utils'
+import Weight from './components/neural_network/Weight'
 
 function App() {
   const neuronsPerLayer = [1, 3, 5, 5, 3, 1];
@@ -46,6 +47,15 @@ function App() {
           neuronSpacingY={neuronSpacingY}
           neuronActiveColour={neuronActiveColour}
           neuronInactiveColour={neuronInactiveColour}
+        />
+
+        // Example weight
+        <Weight
+          x1={canvasWidth / 2}
+          y1={canvasHeight / 2}
+          x2={canvasWidth / 2 + 100}
+          y2={canvasHeight / 2 + 100}
+          isActive={true}
         />
       </svg>
       <StartButton />
