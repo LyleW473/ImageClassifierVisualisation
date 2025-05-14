@@ -6,8 +6,8 @@ type NeuronLayerProperties = {
     numNeurons: number;
     neuronRadius: number;
     neuronSpacing: number;
-    neuronActiveColour: string;
-    neuronInactiveColour: string;
+    neuronActiveColour?: string;
+    neuronInactiveColour?: string;
 }
 
 const NeuronLayer = (
