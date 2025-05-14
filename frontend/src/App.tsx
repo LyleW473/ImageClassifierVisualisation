@@ -1,7 +1,7 @@
 import Heading from './components/Heading'
 import Section from './components/Section'
 import StartButton from './components/StartButton'
-import Neuron from './components/Neuron'
+import NeuronLayer from './components/NeuronLayer'
 
 function App() {
   return (
@@ -11,13 +11,18 @@ function App() {
           This is an example section
       </Section>
       <svg width="1000" height="1000">
-        <Neuron x={100} y={100} radius={100} active={false}></Neuron>
-        <Neuron x={100} y={400} radius={100} active={false}></Neuron>
-        <Neuron x={100} y={700} radius={100} active={false}></Neuron>
+        <NeuronLayer
+          topLeftNeuronX={100}
+          topLeftNeuronY={100}
+          numNeurons={5}
+          neuronRadius={50}
+          neuronSpacing={20}
+          neuronActiveColour="green"
+          neuronInactiveColour="red"
+          />
       </svg>
       <StartButton />
     </>
   )
 }
-
 export default App
