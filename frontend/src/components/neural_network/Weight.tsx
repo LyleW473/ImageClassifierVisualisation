@@ -8,7 +8,7 @@ type WeightProperties = {
     inactiveColour?: string;
 }
 
-const Weight = ({x1, y1, x2, y2, isActive=false, activeColour="blue", inactiveColour="pink"}:WeightProperties) => {
+const Weight = ({x1, y1, x2, y2, isActive=false, activeColour="blue", inactiveColour="black"}:WeightProperties) => {
     return (
         <line
             x1={x1}
@@ -16,7 +16,7 @@ const Weight = ({x1, y1, x2, y2, isActive=false, activeColour="blue", inactiveCo
             x2={x2}
             y2={y2}
             stroke={isActive ? activeColour : inactiveColour}
-            strokeWidth="5"
+            strokeWidth="3"
         />
     );
 }
