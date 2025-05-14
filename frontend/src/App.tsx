@@ -9,12 +9,14 @@ function App() {
   const gapBetweenLayersX = 200;
   const neuronRadius = 50;
   const neuronSpacingY = 25;
+  const neuronPaddingX = 10;
+  const neuronPaddingY = 10;
   const neuronActiveColour = "green";
   const neuronInactiveColour = "red";
 
   // Calculate canvas height based on the number of neurons in the largest layer
-  const canvasPaddingY = 0;
-  const canvasPaddingX = 0;
+  const canvasPaddingY = 50;
+  const canvasPaddingX = 50;
 
   const canvasHeight = calculateCanvasHeight(neuronsPerLayer, neuronRadius, neuronSpacingY, canvasPaddingY);
   const canvasWidth = calculateCanvasWidth(neuronsPerLayer, neuronRadius, gapBetweenLayersX, canvasPaddingX);
@@ -42,6 +44,8 @@ function App() {
           canvasHeight={canvasHeight}
           neuronsPerLayer={neuronsPerLayer}
           gapBetweenLayersX={gapBetweenLayersX}
+          neuronPaddingX={neuronPaddingX}
+          neuronPaddingY={neuronPaddingY}
           neuronRadius={neuronRadius}
           neuronSpacingY={neuronSpacingY}
           neuronActiveColour={neuronActiveColour}

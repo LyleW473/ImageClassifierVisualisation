@@ -7,8 +7,8 @@ type NeuralNetworkProperties = {
     neuronsPerLayer: number[];
     gapBetweenLayersX: number;
     neuronRadius: number;
-    neuronPaddingX?: number;
-    neuronPaddingY?: number;
+    neuronPaddingX: number;
+    neuronPaddingY: number;
     neuronSpacingY: number;
     neuronActiveColour?: string;
     neuronInactiveColour?: string;
@@ -20,8 +20,8 @@ const NeuralNetwork = ({
     neuronsPerLayer,
     gapBetweenLayersX,
     neuronRadius,
-    neuronPaddingX=0,
-    neuronPaddingY=0,
+    neuronPaddingX,
+    neuronPaddingY,
     neuronSpacingY,
     neuronActiveColour,
     neuronInactiveColour
