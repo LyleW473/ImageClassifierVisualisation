@@ -1,7 +1,7 @@
 import Heading from './components/Heading'
 import Section from './components/Section'
 import StartButton from './components/StartButton'
-import NeuralNetwork from './components/NeuralNetwork'
+import NeuralNetwork from './components/neural_network/NeuralNetwork'
 import { calculateCanvasHeight, calculateCanvasWidth } from './canvas/utils'
 
 function App() {

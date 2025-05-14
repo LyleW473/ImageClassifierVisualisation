@@ -1,5 +1,4 @@
-import NeuronLayer from "./NeuronLayer";
-
+import NeuronLayer from './NeuronLayer';
 
 type NeuralNetworkProperties = {
     canvasWidth: number;
