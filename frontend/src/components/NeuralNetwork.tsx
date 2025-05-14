@@ -8,7 +8,9 @@ type NeuralNetworkProperties = {
     neuronsPerLayer: number[];
     neuronXGap: number;
     neuronRadius: number;
-    neuronSpacing: number;
+    neuronPaddingX?: number;
+    neuronPaddingY?: number;
+    neuronSpacingY: number;
     neuronActiveColour?: string;
     neuronInactiveColour?: string;
 }
@@ -20,7 +22,9 @@ const NeuralNetwork = ({
     neuronsPerLayer,
     neuronXGap,
     neuronRadius,
-    neuronSpacing,
+    neuronPaddingX=0,
+    neuronPaddingY=0,
+    neuronSpacingY,
     neuronActiveColour,
     neuronInactiveColour
     }: NeuralNetworkProperties) => {
@@ -30,11 +34,13 @@ const NeuralNetwork = ({
         const layerXStart = topLeftNeuronX + (i * (neuronRadius * 2 + neuronXGap));
         const neuralLayer = <NeuronLayer
             key={i}
-            topLeftNeuronX={layerXStart}
-            topLeftNeuronY={topLeftNeuronY}
+            rectX={layerXStart}
+            rectY={topLeftNeuronY}
+            paddingX={neuronPaddingX}
+            paddingY={neuronPaddingY}
             numNeurons={neuronsPerLayer[i]}
             neuronRadius={neuronRadius}
-            neuronSpacing={neuronSpacing}
+            neuronSpacingY={neuronSpacingY}
             neuronActiveColour={neuronActiveColour}
             neuronInactiveColour={neuronInactiveColour}
         />  

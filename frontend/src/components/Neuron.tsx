@@ -1,17 +1,17 @@
 type NeuronProperties = {
-    x: number;
-    y: number;
+    cx: number;
+    cy: number;
     radius: number;
     active: boolean;
     activeColour?: string;
     inactiveColour?: string;
 }
 
-const Neuron = ({x, y, radius, active, activeColour="green", inactiveColour="red"}:NeuronProperties) => {
+const Neuron = ({cx, cy, radius, active, activeColour="green", inactiveColour="red"}:NeuronProperties) => {
     return (
         <circle
-            cx={x}
-            cy={y}
+            cx={cx}
+            cy={cy}
             r={radius}
             fill={active ? activeColour : inactiveColour}
             stroke="black"

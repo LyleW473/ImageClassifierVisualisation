@@ -18,7 +18,7 @@ function App() {
           neuronsPerLayer={[1, 3, 3, 3, 1]}
           neuronXGap={200}
           neuronRadius={50}
-          neuronSpacing={50}
+          neuronSpacingY={25}
           neuronActiveColour="green"
           neuronInactiveColour="red"
         />
