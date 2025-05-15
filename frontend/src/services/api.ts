@@ -8,8 +8,8 @@ export interface PredictionResponse {
     actual_class_name: string
 }
 
-export const callBackendAPI = async () => {
-    const response = await axios.get<PredictionResponse>("http://localhost:8000/predict")
+export const callBackendAPI = async ():Promise<PredictionResponse> => {
+    const response = await axios.get<PredictionResponse>('/predict')
     if (response.status !== 200) {
         throw new Error(`Error: ${response.status}`);
     }
