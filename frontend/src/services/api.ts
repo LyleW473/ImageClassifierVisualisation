@@ -2,10 +2,9 @@ import axios from 'axios';
 
 export interface PredictionResponse {
     status: string;
-    message?: string;
     confidence: number;
-    predicted_class_name: string;
-    actual_class_name: string
+    predictedClassName: string;
+    actualClassName: string
 }
 
 export const callBackendAPI = async ():Promise<PredictionResponse> => {
