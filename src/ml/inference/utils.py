@@ -1,7 +1,8 @@
 import torch
 import numpy as np
 
-from typing import Dict, Any, Tuple
+from PIL import Image
+from typing import Dict, Any, Tuple, List, Union
 
 from src.ml.model.results import InferenceResult
 
@@ -77,3 +78,17 @@ def get_json_result(
     }
     print("JSON result", json_result)
     return json_result
+
+def save_image_locally(image:List[Union[float, int]], file_path:str) -> None:
+    """
+    Saves an image in format (C, H, W) to a file path in RGB format.
+
+    Args:
+        image (List[Union[float, int]]): The image to be saved, in the format (C, H, W).
+                                         file_path (str): The path where the image will be saved.
+
+    """
+    image = np.array(image)
+    image = image.transpose(1, 2, 0)  # Convert from (C, H, W) to (H, W, C)
+    image = Image.fromarray(image.astype("uint8"), "RGB")
+    image.save(file_path)
