@@ -2,6 +2,7 @@ import Heading from './components/Heading'
 import Section from './components/Section'
 import StartButton from './components/StartButton'
 import NeuralNetwork from './components/neural_network/NeuralNetwork'
+import ResultBox from './components/ResultBox'
 import { calculateCanvasHeight, calculateCanvasWidth } from './canvas/utils'
 
 function App() {
@@ -27,9 +28,14 @@ function App() {
       <Section title={"Example Section"}>
           This is an example section
       </Section>
-      <Section title={"Original Image"}>
-          <img src="predicted_image_1.jpg" alt="Original" style={{ maxWidth: '100%' }} />
-      </Section>
+
+      <ResultBox // Replace with information from backend.
+        originalImagePath="predicted_image_1.jpg"
+        predictedClassName="Cat"
+        actualClassName="Dog"
+        confidence={0.85}
+      />
+
       <svg width={canvasWidth} height={canvasHeight}>
 
         // Background rectangle
