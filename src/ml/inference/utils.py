@@ -46,6 +46,7 @@ def get_json_result(
         class_index (Dict[str, str]): A dictionary mapping class IDs to class names.
         label (int): The actual label of the image.
     """
+    original_images = inference_result.original_images
     features = inference_result.features
     logits = inference_result.logits
     probs = inference_result.probs
@@ -68,6 +69,8 @@ def get_json_result(
     json_result = {
         # "feature": features,
         # "logits": logits,
+        "originalImages": original_images,
+        "features": features,
         "confidence": confidence,
         "predictedClassName": predicted_class_name,
         "actualClassName": actual_class_name,

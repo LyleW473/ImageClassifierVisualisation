@@ -34,12 +34,16 @@ class ModelWrapper:
         Returns:
             torch.Tensor: Model outputs.
         """
+        
+        original_images = images.clone().numpy().tolist()  # Copy original images for result
         images = self.image_preprocessor(images)
         features = self.feature_extractor(images)
         print("Features", [feature.shape for feature in features])
-        logits, probs, class_ids = self.classifier(features[-1]) # Last feature map
-
+        print(f"Images shape: {images.shape}")
+        logits, probs, class_ids = self.classifier(features[-1]) # Last feature maps for batch
+    
         result = InferenceResult(
+            original_images=original_images,
             features=features,
             logits=logits,
             probs=probs,
