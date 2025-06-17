@@ -3,12 +3,13 @@ import numpy as np
 import random
 
 from datasets import load_dataset
-from typing import Dict
+from typing import Dict, Any, Iterator, Tuple
 
 from src.ml.model.wrappers import ModelWrapper  
 from src.ml.inference.utils import preprocess_dataset_image, get_json_result
+from src.ml.model.results import InferenceResult
 
-def get_imagenet1k_sample_generator(buffer_size:int=100):
+def get_imagenet1k_sample_generator(buffer_size:int=100) -> Iterator[Tuple[torch.Tensor, int]]:
     """
     Generator function to yield samples from the ImageNet-1K dataset.
     - Returns a tuple of (image, label) for each sample.
@@ -59,14 +60,17 @@ def get_answer_generator(
         class_index (Dict[str, str]): A dictionary mapping class IDs to class names.
     """
     while True:
-        image, label = next(sample_generator)
+        sample:tuple = next(sample_generator)
+        image:torch.Tensor = sample[0]
+        label:int = sample[1]
         
         # Forward pass
         with torch.no_grad():
-            inference_result = model.forward(image)
+            inference_result:InferenceResult = model.forward(image)
         
-        yield get_json_result(
+        json_result: Dict[str, Any] = get_json_result(
                             inference_result=inference_result, 
                             class_index=class_index, 
                             label=label
                             )
+        yield json_result

@@ -22,4 +22,4 @@ if __name__ == "__main__":
     for i in range(20):
         print("Iteration", i)
         pred_answer_json = next(answer_gen)
-    
+        print(pred_answer_json.keys())
