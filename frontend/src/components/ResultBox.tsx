@@ -1,14 +1,35 @@
 
 import Section from './Section';
+import type { PredictionResponse } from '../services/api';
 
 type ResultBoxProps = {
-    originalImagePath?: string; // Path to the original image in the public folder
-    predictedClassName: string; // The class name predicted by the model
-    actualClassName: string; // The actual class name of the image
-    confidence: number; // The confidence level of the prediction, between 0 and 1
+    // originalImagePath?: string; // Path to the original image in the public folder
+    // predictedClassName: string; // The class name predicted by the model
+    // actualClassName: string; // The actual class name of the image
+    // confidence: number; // The confidence level of the prediction, between 0 and 1
+    result: PredictionResponse | null
 }
 
-const ResultBox = ({ originalImagePath, predictedClassName, actualClassName, confidence }: ResultBoxProps) => {
+const ResultBox = ({ result }: ResultBoxProps) => {
+
+    let predictedClassName: string;
+    let actualClassName: string;
+    let confidence: number;
+    let originalImagePath: string;
+
+    if (!result) {
+        predictedClassName = "N/A";
+        actualClassName = "N/A";
+        confidence = 0;
+        originalImagePath = "placeholder_image.jpg"; // Placeholder image path
+    }
+    else {
+        predictedClassName = result.predictedClassName;
+        actualClassName = result.actualClassName;
+        confidence = result.confidence;
+        originalImagePath = result.originalImagePath;
+    }
+
     return (
         <div style={{ display: 'flex', gap: '20px', justifyContent: 'center', alignItems: 'flex-start'}}>
             <Section title={"Original Image"}>

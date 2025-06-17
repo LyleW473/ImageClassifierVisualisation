@@ -5,6 +5,7 @@ export interface PredictionResponse {
     confidence: number;
     predictedClassName: string;
     actualClassName: string
+    originalImagePath: string; // Path to the original image in the public folder
 }
 
 export const callBackendAPI = async ():Promise<PredictionResponse> => {

@@ -1,9 +1,11 @@
+import { useState } from 'react';
 import Heading from './components/Heading'
 import Section from './components/Section'
 import StartButton from './components/StartButton'
 import NeuralNetwork from './components/neural_network/NeuralNetwork'
 import ResultBox from './components/ResultBox'
 import { calculateCanvasHeight, calculateCanvasWidth } from './canvas/utils'
+import type { PredictionResponse } from './services/api';
 
 function App() {
   const neuronsPerLayer = [1, 3, 5, 5, 5, 3, 1];
@@ -22,18 +24,17 @@ function App() {
   const canvasHeight = calculateCanvasHeight(neuronsPerLayer, neuronRadius, neuronSpacingY, canvasPaddingY);
   const canvasWidth = calculateCanvasWidth(neuronsPerLayer, neuronRadius, gapBetweenLayersX, canvasPaddingX);
 
+  const [info, setInfo] = useState<PredictionResponse | null>(null);
+
   return (
     <>
       <Heading title={"Hello World"} />
       <Section title={"Example Section"}>
           This is an example section
       </Section>
-
+      
       <ResultBox // Replace with information from backend.
-        originalImagePath="predicted_image_1.jpg"
-        predictedClassName="Cat"
-        actualClassName="Dog"
-        confidence={0.85}
+        result={info}
       />
 
       <svg width={canvasWidth} height={canvasHeight}>
@@ -61,7 +62,7 @@ function App() {
           neuronInactiveColour={neuronInactiveColour}
         />
       </svg>
-      <StartButton />
+      <StartButton onFetch={setInfo}/>
     </>
   )
 }

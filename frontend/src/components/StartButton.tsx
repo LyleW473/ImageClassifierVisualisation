@@ -1,20 +1,21 @@
-import { useState } from 'react';
+
 import { callBackendAPI} from '../services/api';
 import type { PredictionResponse } from '../services/api';
 
-const StartButton = () => {
+type StartButtonProperties = {
+    onFetch: (info: PredictionResponse) => void;
+}
 
-    const [info, setInfo] = useState<PredictionResponse | null>(null);
-
+const StartButton = ({ onFetch }: StartButtonProperties) => {
     const handleClick = () => {
         callBackendAPI()
-            .then(setInfo)
+            // Add save and add to the predictionREsponse (attach the image path)
+            .then(onFetch)
             .catch(console.error);
     };
-    
+
     return (
     <>
-        <h2> Information: {info ? JSON.stringify(info) : "No info yet"} </h2>
         <button onClick={handleClick}>
             Start
         </button>
