@@ -69,8 +69,8 @@ def get_json_result(
         # "feature": features,
         # "logits": logits,
         "confidence": confidence,
-        "predicted_class_name": predicted_class_name,
-        "actual_class_name": actual_class_name,
+        "predictedClassName": predicted_class_name,
+        "actualClassName": actual_class_name,
     }
     print("JSON result", json_result)
     return json_result
