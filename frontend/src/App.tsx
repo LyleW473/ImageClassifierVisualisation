@@ -5,7 +5,7 @@ import NeuralNetwork from './components/neural_network/NeuralNetwork'
 import { calculateCanvasHeight, calculateCanvasWidth } from './canvas/utils'
 
 function App() {
-  const neuronsPerLayer = [1, 3, 5, 5, 3, 1];
+  const neuronsPerLayer = [1, 3, 5, 5, 5, 3, 1];
   const gapBetweenLayersX = 200;
   const neuronRadius = 50;
   const neuronSpacingY = 25;
