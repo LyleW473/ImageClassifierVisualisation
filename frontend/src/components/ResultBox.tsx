@@ -27,8 +27,9 @@ const ResultBox = ({ result }: ResultBoxProps) => {
         predictedClassName = result.predictedClassName;
         actualClassName = result.actualClassName;
         confidence = result.confidence;
-        originalImagePath = result.originalImagePath;
+        originalImagePath = result.originalImagePath
     }
+    console.log(originalImagePath);
 
     return (
         <div style={{ display: 'flex', gap: '20px', justifyContent: 'center', alignItems: 'flex-start'}}>

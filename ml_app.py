@@ -9,6 +9,8 @@ from src.ml.model.utils import load_model
 from src.ml.inference.generators import get_imagenet1k_sample_generator, get_answer_generator
 
 from src.ml.backend.logging_config import LOGGING_CONFIG
+from src.ml.inference.utils import save_image_locally
+from fastapi.staticfiles import StaticFiles
 
 app = FastAPI()
 app.add_middleware(
@@ -18,6 +20,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+app.mount("/static", StaticFiles(directory="backend/static"), name="static")
 
 logging.config.dictConfig(LOGGING_CONFIG)
 log = logging.getLogger(__name__)
@@ -64,11 +67,18 @@ async def get_prediction(request:Request) -> JSONResponse:
         log.error(f"Error in prediction: {e}")
         answer_json = {"error": str(e)}
         status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
-    
+
+    # Save the image locally at /static endpoint.
+    original_image = answer_json["originalImages"][0]  # Take the first image from the list
+    save_image_locally(original_image, "backend/static/predicted_image.jpg")
+    image_url = request.url_for("static", path="predicted_image.jpg")
+    log.info(f"Image saved at: {image_url}")
+    answer_json["originalImagePath"] = str(image_url)
     json_response = JSONResponse(
                             content=answer_json,
                             status_code=status_code
                             )
+
     log.info(f"Response | Status code: {json_response.status_code} | Content: {json_response.body}")
     return json_response
 

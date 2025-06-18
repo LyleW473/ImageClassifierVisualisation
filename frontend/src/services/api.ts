@@ -9,6 +9,9 @@ export interface PredictionResponse {
 }
 
 export const callBackendAPI = async ():Promise<PredictionResponse> => {
+    // TODO: Call the backend API instead
+    
+    // Call ML backend for prediction
     const response = await axios.get<PredictionResponse>('/predict')
     if (response.status !== 200) {
         throw new Error(`Error: ${response.status}`);
