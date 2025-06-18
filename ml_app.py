@@ -1,6 +1,9 @@
 import json
 import logging.config
 import logging
+import shutil
+import os
+import uuid
 
 from fastapi import FastAPI, Request, status
 from fastapi.middleware.cors import CORSMiddleware
@@ -70,8 +73,11 @@ async def get_prediction(request:Request) -> JSONResponse:
 
     # Save the image locally at /static endpoint.
     original_image = answer_json["originalImages"][0]  # Take the first image from the list
-    save_image_locally(original_image, "backend/static/predicted_image.jpg")
-    image_url = request.url_for("static", path="predicted_image.jpg")
+    shutil.rmtree("backend/static", ignore_errors=True) # Clear the static directory before saving new images
+    os.makedirs("backend/static", exist_ok=True)
+    image_name = f"predicted_image_{uuid.uuid4()}.jpg"
+    save_image_locally(original_image, f"backend/static/{image_name}")
+    image_url = request.url_for("static", path=image_name)
     log.info(f"Image saved at: {image_url}")
     answer_json["originalImagePath"] = str(image_url)
     json_response = JSONResponse(
